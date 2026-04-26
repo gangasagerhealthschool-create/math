@@ -429,7 +429,7 @@ def build_fallback_summary(category: str, children) -> str:
     if category == "general":
         question = children[1].value.strip() if len(children) > 1 else ""
         return (
-            f"**{ign}** has opened a General Support ticket on RadiumMC. "
+            f"**{ign}** has opened a General Support ticket on shatterMC. "
             f"They are seeking help with the following: {question}"
         )
     elif category == "report":
@@ -442,13 +442,13 @@ def build_fallback_summary(category: str, children) -> str:
     elif category == "bug":
         desc = children[1].value.strip() if len(children) > 1 else ""
         return (
-            f"**{ign}** has reported a bug on the RadiumMC server. "
+            f"**{ign}** has reported a bug on the shatterMC server. "
             f"The issue they encountered is: {desc}"
         )
     elif category == "appeal":
         reason = children[1].value.strip() if len(children) > 1 else ""
         return (
-            f"**{ign}** is appealing a punishment on RadiumMC. "
+            f"**{ign}** is appealing a punishment on shatterMC. "
             f"Their reason for the appeal is: {reason}"
         )
     return f"**{ign}** has opened a new support ticket under the **{category.upper()}** category."
@@ -461,7 +461,7 @@ async def get_ai_summary(category: str, fields_text: str, children=None) -> str:
     try:
         async with aiohttp.ClientSession() as session:
             prompt = (
-                f"You are a senior support manager for a Minecraft server called RadiumMC. "
+                f"You are a senior support manager for a Minecraft server called shatterMC. "
                 f"A player just opened a support ticket. Using the details below, write a clear "
                 f"3-5 sentence paragraph in your own words explaining exactly what this ticket is about, "
                 f"what the player needs, and any important details staff should be aware of. "
@@ -503,7 +503,7 @@ class TicketSelect(discord.ui.Select):
                                  description="Appeal a ban or mute"),
         ]
         super().__init__(placeholder="Select a category...", min_values=1, max_values=1,
-                         options=options, custom_id="radiummc_ticket_select")
+                         options=options, custom_id="shattermc_ticket_select")
 
     async def callback(self, interaction: discord.Interaction):
         selection = self.values[0]
@@ -619,7 +619,7 @@ class TicketModal(discord.ui.Modal):
             title="🤖 AI Ticket Summary", description=summary_text,
             color=discord.Color.purple(), timestamp=discord.utils.utcnow()
         )
-        summary_embed.set_footer(text="Powered by RadiumMC AI")
+        summary_embed.set_footer(text="Powered by shatterMC AI")
         await ticket_channel.send(embed=summary_embed)
 
         await ticket_channel.send(
@@ -683,7 +683,7 @@ class TicketControlView(discord.ui.View):
         return info.get("opener_id") if info else None
 
     @discord.ui.button(label="Claim", style=discord.ButtonStyle.success,
-                       emoji="🙋‍♂️", custom_id="radiummc_ticket_claim")
+                       emoji="🙋‍♂️", custom_id="shattermc_ticket_claim")
     async def claim_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
         opener_id = self._get_opener_id(interaction.channel.id)
         if opener_id and interaction.user.id == opener_id:
@@ -694,7 +694,7 @@ class TicketControlView(discord.ui.View):
             title="Claimed Ticket",
             description=f"Your ticket will be handled by {interaction.user.mention}",
             color=discord.Color.green())
-        embed.set_footer(text="Powered by RadiumMC",
+        embed.set_footer(text="Powered by shatterMC",
                          icon_url=interaction.guild.icon.url if interaction.guild.icon else None)
 
         button.disabled = True
@@ -708,7 +708,7 @@ class TicketControlView(discord.ui.View):
             cog.increment_claims(interaction.guild.id, interaction.user.id)
 
     @discord.ui.button(label="Close Ticket", style=discord.ButtonStyle.danger,
-                       emoji="🔒", custom_id="radiummc_ticket_close")
+                       emoji="🔒", custom_id="shattermc_ticket_close")
     async def close_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_message("🔒 Ticket will close in 5 seconds...")
 
@@ -824,7 +824,7 @@ class Ticket(commands.Cog):
             await interaction.response.send_message("❌ You need Administrator permission.", ephemeral=True)
             return
 
-        embed = discord.Embed(title="RadiumMC Support Center", description="",
+        embed = discord.Embed(title="shatterMC Support Center", description="",
                               color=discord.Color.from_rgb(87, 198, 120))
         desc = """
 📝 **General Support**
@@ -836,7 +836,7 @@ If you suspect a player of cheating, hacking, exploiting, or breaking server rul
 • A screenshot clearly showing the player's username
 
 🛠️ **Bug Reports**
-Have you discovered a bug, glitch, or unintended behavior on the server? Bug reports help us improve RadiumMC and maintain a fair experience for everyone. When submitting a bug report, please include:
+Have you discovered a bug, glitch, or unintended behavior on the server? Bug reports help us improve shatterMC and maintain a fair experience for everyone. When submitting a bug report, please include:
 • A detailed explanation of the issue
 • Steps to reproduce the bug (if possible)
 • Screenshots or video evidence (recommended)
@@ -851,7 +851,7 @@ If you believe a punishment was issued incorrectly or unfairly, you may submit a
 • Only bans longer than 7 days are appealable (unless the punishment was false)
 Please note that submitting an appeal does not guarantee removal of the punishment.
 
-Thank you for playing on RadiumMC! We appreciate your cooperation and aim to provide fair, fast, and reliable support for all players.
+Thank you for playing on shatterMC! We appreciate your cooperation and aim to provide fair, fast, and reliable support for all players.
 """
         embed.description = desc.strip()
         if interaction.guild.icon:
@@ -2554,7 +2554,7 @@ class ServerIP(commands.Cog):
 
     @app_commands.command(name="registerip",
                           description="Register the Minecraft server IP for auto-reply (Admin only)")
-    @app_commands.describe(ip="The server IP address (e.g. play.radiummc.net)")
+    @app_commands.describe(ip="The server IP address (e.g. play.shattermc.net)")
     @app_commands.checks.has_permissions(manage_guild=True)
     async def registerip(self, interaction: discord.Interaction, ip: str):
         ip = ip.strip()
